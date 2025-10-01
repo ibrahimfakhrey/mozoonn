@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Teachers{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>Teachers</h1>
+    <a class="btn btn-outline-primary" href="{{ url_for('main.import_teachers') }}">Import teachers</a>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-striped">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Mobile</th>
+          <th>Warnings</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for teacher in teachers %}
+          <tr>
+            <td>{{ teacher.full_name }}</td>
+            <td>{{ teacher.email }}</td>
+            <td>{{ teacher.mobile or '—' }}</td>
+            <td>
+              {% if teacher.warnings >= 3 %}
+                <span class="badge badge-danger">{{ teacher.warnings }}</span>
+              {% elif teacher.warnings >= 1 %}
+                <span class="badge badge-warning">{{ teacher.warnings }}</span>
+              {% else %}
+                <span class="badge bg-secondary">0</span>
+              {% endif %}
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="4" class="text-center">No teachers found. Import them from an .xls file.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% endblock %}
