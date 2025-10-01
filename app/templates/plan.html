@@ -1,0 +1,97 @@
+{% extends "base.html" %}
+{% block title %}Dismissal Plan - {{ day }}{% endblock %}
+{% block content %}
+  <div class="d-flex justify-content-between align-items-center">
+    <h1 class="mb-3">{{ day }} Dismissal Plan</h1>
+    <form class="d-flex" method="get">
+      <input type="date" class="form-control me-2" name="date" value="{{ target_date.isoformat() }}">
+      <button class="btn btn-outline-primary" type="submit">Change date</button>
+    </form>
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Switch day</label>
+    <select class="form-select" onchange="if (this.value) { window.location.href = this.value; }">
+      <option value="">Select a day</option>
+      {% for plan_option in all_plans %}
+        {% set is_selected = plan and plan_option.day_of_week == plan.day_of_week %}
+        <option value="{{ url_for('main.plan_for_day', day=plan_option.day_of_week, date=target_date.isoformat()) }}" {% if is_selected %}selected{% endif %}>{{ plan_option.day_of_week }}</option>
+      {% endfor %}
+    </select>
+  </div>
+
+  {% if plan %}
+    <div class="card mb-4">
+      <div class="card-body">
+        <h5 class="card-title">Supervisor: {{ plan.supervisor }}</h5>
+        {% if plan.team %}<p class="card-text">Team: {{ plan.team }}</p>{% endif %}
+      </div>
+    </div>
+
+    <form method="post">
+      <input type="hidden" name="date" value="{{ target_date.isoformat() }}">
+      {% for section in plan.sections|sort(attribute='order') %}
+        <div class="section-title">
+          <h2>{{ section.name }}</h2>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th style="width:4rem;">#</th>
+                <th>Teacher</th>
+                <th>Task / Location</th>
+                <th style="width:12rem;">Attendance</th>
+                <th style="width:8rem;">Warnings</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for assignment in section.assignments %}
+                {% set record = attendance_map.get(assignment.id) %}
+                {% set teacher = assignment.teacher %}
+                <tr class="{% if record and record.status == 'absent' %}table-danger{% endif %}">
+                  <td>{{ assignment.order }}</td>
+                  <td>
+                    <strong>{{ assignment.display_name }}</strong>
+                    {% if teacher %}
+                      <div class="text-muted small">{{ teacher.email }}{% if teacher.mobile %} · {{ teacher.mobile }}{% endif %}</div>
+                    {% endif %}
+                  </td>
+                  <td>{{ assignment.place_task or '—' }}</td>
+                  <td>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="assignment-{{ assignment.id }}" id="assignment-{{ assignment.id }}-present" value="present" {% if record and record.status == 'present' %}checked{% endif %}>
+                      <label class="form-check-label" for="assignment-{{ assignment.id }}-present">Present</label>
+                    </div>
+                    <div class="form-check form-check-inline">
+                      <input class="form-check-input" type="radio" name="assignment-{{ assignment.id }}" id="assignment-{{ assignment.id }}-absent" value="absent" {% if record and record.status == 'absent' %}checked{% endif %}>
+                      <label class="form-check-label" for="assignment-{{ assignment.id }}-absent">Absent</label>
+                    </div>
+                  </td>
+                  <td>
+                    {% if teacher %}
+                      {% if teacher.warnings >= 3 %}
+                        <span class="badge badge-danger">{{ teacher.warnings }}</span>
+                      {% elif teacher.warnings >= 1 %}
+                        <span class="badge badge-warning">{{ teacher.warnings }}</span>
+                      {% else %}
+                        <span class="badge bg-secondary">0</span>
+                      {% endif %}
+                    {% else %}
+                      <span class="badge bg-light text-dark">N/A</span>
+                    {% endif %}
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% endfor %}
+      <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" type="submit">Save attendance</button>
+      </div>
+    </form>
+  {% else %}
+    <div class="alert alert-info">No plan available for {{ day }}. Please load the plan using the CLI command.</div>
+  {% endif %}
+{% endblock %}

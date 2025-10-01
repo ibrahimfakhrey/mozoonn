@@ -1,0 +1,296 @@
+[
+  {
+    "day": "Sunday",
+    "supervisor": "Hany Amin",
+    "team": "ELA + German + SSA + Music",
+    "sections": [
+      {
+        "name": "Building Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Dina Refaat", "place_task": "Fifth floor in front of the middle stairs"},
+          {"order": 2, "teacher": "Mohamed Salama", "place_task": "Fifth floor in front of the computer lab"},
+          {"order": 3, "teacher": "Safa Abd Elaleem", "place_task": "Fourth floor in front of the Canteen stairs"},
+          {"order": 4, "teacher": "Basma Seif", "place_task": "Third Floor in front of the middle stairs"},
+          {"order": 5, "teacher": "Hagar El-Gohary", "place_task": "Third Floor in front of the accountant's stairs"},
+          {"order": 6, "teacher": "Asmaa Hamdy", "place_task": "Second floor in front of the Canteen stairs"},
+          {"order": 7, "teacher": "Nora Amgad", "place_task": "Second floor in front of the accountant's stairs"}
+        ]
+      },
+      {
+        "name": "Garden Supervision",
+        "assignments": [
+          {"order": 8, "teacher": "PE", "place_task": "G 1&2"},
+          {"order": 9, "teacher": "PE", "place_task": "G3&4"},
+          {"order": 10, "teacher": "PE", "place_task": "G5&6"},
+          {"order": 11, "teacher": "Hanan Romany", "place_task": "G7&8"},
+          {"order": 12, "teacher": "Shimaa Desouky", "place_task": "G9&10"}
+        ]
+      },
+      {
+        "name": "Receiving and giving the students to the drivers",
+        "assignments": [
+          {"order": 13, "teacher": "Hany Amin", "place_task": "Responsible for taking the papers from the drivers and preventing the drivers from entering the school"},
+          {"order": 14, "teacher": "Fatma Al-Zahraa", "place_task": "Receiving the papers and getting the students to the drivers."},
+          {"order": 15, "teacher": "Basma Tarek"},
+          {"order": 16, "teacher": "Mohamed Abdelhakam"},
+          {"order": 17, "teacher": "Rania Yosry"},
+          {"order": 18, "teacher": "Mai Awny"},
+          {"order": 19, "teacher": "M.Shokry"},
+          {"order": 20, "teacher": "Mohamed Salah"},
+          {"order": 21, "teacher": "Ahmed El-Kady"},
+          {"order": 22, "teacher": "Essam"},
+          {"order": 23, "teacher": "Mostafa"},
+          {"order": 24, "teacher": "Mohamed Samir ( music)"},
+          {"order": 25, "teacher": "Basma Mohamed"},
+          {"order": 26, "teacher": "Dina Emad"},
+          {"order": 27, "teacher": "Norhan Haitham"},
+          {"order": 28, "teacher": "Abdelwahab Mahrous"},
+          {"order": 29, "teacher": "Amira Samaan"},
+          {"order": 30, "teacher": "Nesma Hesham"},
+          {"order": 31, "teacher": "Hadeer Emad"},
+          {"order": 32, "teacher": "Esraa Adel"},
+          {"order": 33, "teacher": "Hagar yasser"},
+          {"order": 34, "teacher": "Al-Shimaa Abdelkhalik"}
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Monday",
+    "supervisor": "Ramadan Omar",
+    "team": "Arabic + SSE + Computer+ Math +sience",
+    "sections": [
+      {
+        "name": "Building Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Ramadan Omar", "place_task": "Fifth floor in front of the Canteen stairs"},
+          {"order": 2, "teacher": "Reham Younis& Asmaa Khaled", "place_task": "Fourth floor in front of G 12A"},
+          {"order": 3, "teacher": "Howaida Hassan", "place_task": "Third Floor in front of the middle stairs."},
+          {"order": 4, "teacher": "Eman Ramadan", "place_task": "Third Floor in front of the Canteen stairs"},
+          {"order": 5, "teacher": "Shimaa Abdelmoneam", "place_task": "Second floor in front of the Canteen stairs"},
+          {"order": 6, "teacher": "Doaa Marzoq", "place_task": "Second floor in front of the accountant's stairs"}
+        ]
+      },
+      {
+        "name": "Garden Supervision",
+        "assignments": [
+          {"order": 7, "teacher": "PE", "place_task": "G 1& 2"},
+          {"order": 8, "teacher": "PE", "place_task": "G3&4"},
+          {"order": 9, "teacher": "PE", "place_task": "G5&6"},
+          {"order": 10, "teacher": "Dina Mohamed", "place_task": "G7&8"},
+          {"order": 11, "teacher": "Nahed Elrabie", "place_task": "G9&10"}
+        ]
+      },
+      {
+        "name": "Receiving and giving the students to the drivers",
+        "assignments": [
+          {"order": 12, "teacher": "Ahmad Fahr", "place_task": "Responsible for taking the papers from the drivers and preventing the drivers from entering the school"},
+          {"order": 13, "teacher": "Roqaia", "place_task": "Receiving the papers and getting the students to the drivers."},
+          {"order": 14, "teacher": "Ahmad Ragab"},
+          {"order": 15, "teacher": "Mohamed Abdullah"},
+          {"order": 16, "teacher": "Ahmed Mohamed Tokhy"},
+          {"order": 17, "teacher": "Rahma Mohamed Sherien"},
+          {"order": 18, "teacher": "Yasmin Mahmoud"},
+          {"order": 19, "teacher": "Sohaila Elsebaie"},
+          {"order": 20, "teacher": "Abdullah Mohamed"},
+          {"order": 21, "teacher": "Tasneem Abdo"},
+          {"order": 22, "teacher": "Nancy Haseeb"},
+          {"order": 23, "teacher": "Fatma Ahmed"},
+          {"order": 24, "teacher": "Aya Amgad"},
+          {"order": 25, "teacher": "Heba Kamel"},
+          {"order": 26, "teacher": "Mohamed Salah"},
+          {"order": 27, "teacher": "Mohamad Rady"},
+          {"order": 28, "teacher": "Hagar Asy"},
+          {"order": 29, "teacher": "Samar Ahmed"},
+          {"order": 30, "teacher": "Aya Adel"},
+          {"order": 31, "teacher": "Asmaa Magdy"},
+          {"order": 32, "teacher": "Rofida"},
+          {"order": 33, "teacher": "Hagar Gaber"},
+          {"order": 34, "teacher": "Nesreen Adel"}
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Tuesday",
+    "supervisor": "Eman Azab",
+    "team": "Math + Science + Arabic+ Arabic + SSE",
+    "sections": [
+      {
+        "name": "Building Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Eman Ramadan", "place_task": "Fourth floor in front of G 12A"},
+          {"order": 2, "teacher": "Doaa Gamal", "place_task": "Third Floor in front of the accountant's stairs"},
+          {"order": 3, "teacher": "Enas Ahmed", "place_task": "Second floor in front of the Canteen stairs"},
+          {"order": 4, "teacher": "Rasha Reda", "place_task": "Second floor in front of the accountant's stairs"},
+          {"order": 5, "teacher": "Mariem Galal", "place_task": "Ground floor in front of the middle stairs"}
+        ]
+      },
+      {
+        "name": "Garden Supervision",
+        "assignments": [
+          {"order": 6, "teacher": "PE", "place_task": "G1& 2"},
+          {"order": 7, "teacher": "PE", "place_task": "G3&4"},
+          {"order": 8, "teacher": "PE", "place_task": "G5&6"},
+          {"order": 9, "teacher": "Nesreen Adel", "place_task": "G7&8"}
+        ]
+      },
+      {
+        "name": "Receiving and giving the students to the drivers",
+        "assignments": [
+          {"order": 10, "teacher": "Okasha", "place_task": "Responsible for taking the papers from the drivers and preventing the drivers from entering the school"},
+          {"order": 11, "teacher": "Omar Ahmed", "place_task": "Receiving the papers and getting the students to the drivers."},
+          {"order": 12, "teacher": "Mohamad Rady"},
+          {"order": 13, "teacher": "Mohamed Abdel Rabea"},
+          {"order": 14, "teacher": "Elina Emad"},
+          {"order": 15, "teacher": "Yasmin Ahmed"},
+          {"order": 16, "teacher": "Hana Adel"},
+          {"order": 17, "teacher": "Howaida Hassan"},
+          {"order": 18, "teacher": "Amira Abdelrazik"},
+          {"order": 19, "teacher": "Amany Mohamed"},
+          {"order": 20, "teacher": "Eman Azab"},
+          {"order": 21, "teacher": "Amira Samir"},
+          {"order": 22, "teacher": "Hagar Gaber"},
+          {"order": 23, "teacher": "Shimaa Abedmoneam"},
+          {"order": 24, "teacher": "Heba Kamel"},
+          {"order": 25, "teacher": "Dina Mohamed"},
+          {"order": 26, "teacher": "Nahed Elrabie"},
+          {"order": 27, "teacher": "Hagar Assey"},
+          {"order": 28, "teacher": "Amira Farouk"},
+          {"order": 29, "teacher": "Toka Adel"},
+          {"order": 30, "teacher": "Nancy Haseeb"},
+          {"order": 31, "teacher": "Fatma Ahmed"}
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Wednesday",
+    "supervisor": "Aya Amgad",
+    "team": "ELA + German + SSA + Music +French",
+    "sections": [
+      {
+        "name": "Building Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Mohamed Salama", "place_task": "Fifth floor in front of the canteen"},
+          {"order": 2, "teacher": "Safa Abd Elaleem", "place_task": "Fourth floor in front of G 12A"},
+          {"order": 3, "teacher": "Basma Seif", "place_task": "Fourth floor in front of the Canteen stairs"},
+          {"order": 4, "teacher": "Norhan Haitham", "place_task": "Third Floor in front of the middle stairs"},
+          {"order": 5, "teacher": "Rania Yosry", "place_task": "Third Floor in front of the accountant's stairs"},
+          {"order": 6, "teacher": "Basma Tarek", "place_task": "Second floor in front of the Canteen stairs"},
+          {"order": 7, "teacher": "Hagar yasser", "place_task": "Second floor in front of the accountant's stairs"}
+        ]
+      },
+      {
+        "name": "Garden Supervision",
+        "assignments": [
+          {"order": 8, "teacher": "PE", "place_task": "G1& 2"},
+          {"order": 9, "teacher": "PE", "place_task": "G3&4"},
+          {"order": 10, "teacher": "PE", "place_task": "G5&6"},
+          {"order": 11, "teacher": "Essam", "place_task": "G7&8"},
+          {"order": 12, "teacher": "Hanan Romany", "place_task": "G9&10"}
+        ]
+      },
+      {
+        "name": "Receiving and giving the students to the drivers",
+        "assignments": [
+          {"order": 13, "teacher": "Abdelwahab Mahrous", "place_task": "Responsible for taking the papers from the drivers and preventing the drivers from entering the school"},
+          {"order": 14, "teacher": "Basma Mohamed", "place_task": "Receiving the papers and getting the students to the drivers."},
+          {"order": 15, "teacher": "Asmaa Hamdy"},
+          {"order": 16, "teacher": "Nesma Hesham"},
+          {"order": 17, "teacher": "Hagar El-Gohary"},
+          {"order": 18, "teacher": "Mai Awny"},
+          {"order": 19, "teacher": "M.Shokry"},
+          {"order": 20, "teacher": "Hadeer Emad"},
+          {"order": 21, "teacher": "Abdullah Mohamed Shaban"},
+          {"order": 22, "teacher": "Mohamed Samir ( music)"},
+          {"order": 23, "teacher": "Aya Amgad"},
+          {"order": 24, "teacher": "Esraa Adel"},
+          {"order": 25, "teacher": "Ahmad Ragab"},
+          {"order": 26, "teacher": "Nora Amgad"},
+          {"order": 27, "teacher": "Dina Refaat"},
+          {"order": 28, "teacher": "Al-Shimaa Abdelkhalik"},
+          {"order": 29, "teacher": "Amira Samaan"},
+          {"order": 30, "teacher": "Dina Emad"},
+          {"order": 31, "teacher": "Hany Amin"},
+          {"order": 32, "teacher": "Fatma Al-Zahraa"},
+          {"order": 33, "teacher": "Shimaa Desouky"},
+          {"order": 34, "teacher": "Sohaila Elsebaie"},
+          {"order": 35, "teacher": "Mohamed Abdelhakam"}
+        ]
+      }
+    ]
+  },
+  {
+    "day": "Thursday",
+    "supervisor": "Doaa Gamal",
+    "team": "Math + Science + Arabic",
+    "sections": [
+      {
+        "name": "Building Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Ramadan Omar", "place_task": "Fifth floor in front of the Canteen stairs"},
+          {"order": 2, "teacher": "Reham Younis&Asmaa Khaled", "place_task": "Fourth floor in front of G 12A"},
+          {"order": 3, "teacher": "Mariem Galal", "place_task": "Third Floor in front of the middle stairs"},
+          {"order": 4, "teacher": "Enas Ahmed", "place_task": "Third Floor in front of the accountant's stairs"},
+          {"order": 5, "teacher": "Rofida", "place_task": "Second floor in front of the Canteen stairs"},
+          {"order": 6, "teacher": "Doaa Gamal", "place_task": "Second floor in front of the accountant's stairs"}
+        ]
+      },
+      {
+        "name": "Garden Supervision",
+        "assignments": [
+          {"order": 7, "teacher": "PE", "place_task": "G1& 2"},
+          {"order": 8, "teacher": "PE", "place_task": "G3&4"},
+          {"order": 9, "teacher": "PE", "place_task": "G5&6"},
+          {"order": 10, "teacher": "Aya Adel", "place_task": "G7&8"},
+          {"order": 11, "teacher": "Asmaa Magdy", "place_task": "G9&10"}
+        ]
+      },
+      {
+        "name": "Receiving and giving the students to the drivers",
+        "assignments": [
+          {"order": 12, "teacher": "Ahmad Fahr", "place_task": "Responsible for taking the papers from the drivers and preventing the drivers from entering the school"},
+          {"order": 13, "teacher": "Omar Ahmed", "place_task": "Receiving the papers and getting the students to the drivers."},
+          {"order": 14, "teacher": "Ahmed Mohamed Tokhy"},
+          {"order": 15, "teacher": "Mohamed Abdel Rabea"},
+          {"order": 16, "teacher": "Elina Emad"},
+          {"order": 17, "teacher": "Yasmin Ahmed"},
+          {"order": 18, "teacher": "Hana Adel"},
+          {"order": 19, "teacher": "Rasha Reda"},
+          {"order": 20, "teacher": "Amira Abdelrazik"},
+          {"order": 21, "teacher": "Amany Mohamed"},
+          {"order": 22, "teacher": "Tasneem"},
+          {"order": 23, "teacher": "Mostafa"},
+          {"order": 24, "teacher": "Okasha"},
+          {"order": 25, "teacher": "Amira Faroq"},
+          {"order": 26, "teacher": "Amira Samir"},
+          {"order": 27, "teacher": "Samar Ahmed"},
+          {"order": 28, "teacher": "Toka Adel"},
+          {"order": 29, "teacher": "Roqia"},
+          {"order": 30, "teacher": "Mohamed Abdullah"},
+          {"order": 31, "teacher": "Rahma Mohamed"},
+          {"order": 32, "teacher": "Yasmin Mahmoud"}
+        ]
+      },
+      {
+        "name": "Gates",
+        "assignments": [
+          {"order": 1, "teacher": "Finance gate"},
+          {"order": 2, "teacher": "Middle gate"},
+          {"order": 3, "teacher": "KG & parent gate"},
+          {"order": 4, "teacher": "Main gate"},
+          {"order": 5, "teacher": "Canteen gate"}
+        ]
+      },
+      {
+        "name": "General Supervision",
+        "assignments": [
+          {"order": 1, "teacher": "Hadeer Shafiq"},
+          {"order": 2, "teacher": "Ayman"},
+          {"order": 3, "teacher": "Mohamed Mosalam", "place_task": "General supervision"}
+        ]
+      }
+    ]
+  }
+]

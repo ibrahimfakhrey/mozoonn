@@ -1,0 +1,4 @@
+Flask==2.3.3
+Flask-SQLAlchemy==3.1.1
+click==8.1.7
+xlrd<2

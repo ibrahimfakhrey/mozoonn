@@ -1,0 +1,7 @@
+__pycache__/
+*.pyc
+instance/
+.dismissal_checker.db-journal
+dismissal_checker.db
+.venv/
+.env
