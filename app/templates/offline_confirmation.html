@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+{% block title %}Data Saved Offline{% endblock %}
+{% block content %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-warning">
+                <div class="card-header bg-warning text-dark">
+                    <h4 class="mb-0">
+                        <i class="fas fa-wifi-slash me-2"></i>
+                        No Internet Connection
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-info" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="fas fa-save me-2"></i>
+                            Your Data Has Been Saved Locally!
+                        </h5>
+                        <p class="mb-0">
+                            Don't worry! Your attendance submission has been saved on your device and will be automatically 
+                            synchronized with the server when your internet connection is restored.
+                        </p>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-database fa-2x text-primary mb-2"></i>
+                                    <h6>Data Stored Locally</h6>
+                                    <p class="small text-muted">Your submission is safely stored on this device</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-light">
+                                <div class="card-body text-center">
+                                    <i class="fas fa-sync-alt fa-2x text-success mb-2"></i>
+                                    <h6>Auto-Sync Enabled</h6>
+                                    <p class="small text-muted">Will sync automatically when online</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-4">
+                        <h6><i class="fas fa-info-circle me-2"></i>What happens next?</h6>
+                        <ul class="list-unstyled">
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Your data is safely stored on this device
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                When internet returns, data will sync automatically
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                Email notifications will be sent after sync
+                            </li>
+                            <li class="mb-2">
+                                <i class="fas fa-check text-success me-2"></i>
+                                You can continue working normally
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="alert alert-warning mt-4" role="alert">
+                        <strong>Important:</strong> Keep this browser tab open or return to this page later to ensure 
+                        your data gets synchronized when the connection is restored.
+                    </div>
+                    
+                    <div class="d-flex justify-content-between mt-4">
+                        <a href="{{ url_for('main.index') }}" class="btn btn-secondary">
+                            <i class="fas fa-home me-2"></i>Go to Home
+                        </a>
+                        <button id="retry-sync" class="btn btn-primary" onclick="retrySync()">
+                            <i class="fas fa-sync me-2"></i>Try Sync Now
+                        </button>
+                    </div>
+                    
+                    <div id="sync-status" class="mt-3" style="display: none;">
+                        <div class="alert alert-info" role="alert">
+                            <i class="fas fa-spinner fa-spin me-2"></i>
+                            Attempting to sync your data...
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function retrySync() {
+    const syncStatus = document.getElementById('sync-status');
+    const retryButton = document.getElementById('retry-sync');
+    
+    syncStatus.style.display = 'block';
+    retryButton.disabled = true;
+    
+    // Trigger the offline sync mechanism
+    if (window.offlineSync && window.offlineSync.syncPendingData) {
+        window.offlineSync.syncPendingData().then(result => {
+            if (result.success) {
+                syncStatus.innerHTML = `
+                    <div class="alert alert-success" role="alert">
+                        <i class="fas fa-check me-2"></i>
+                        Data synchronized successfully! Redirecting...
+                    </div>
+                `;
+                setTimeout(() => {
+                    window.location.href = "{{ url_for('main.index') }}";
+                }, 2000);
+            } else {
+                syncStatus.innerHTML = `
+                    <div class="alert alert-danger" role="alert">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        Still offline. Will retry automatically when connection is restored.
+                    </div>
+                `;
+                retryButton.disabled = false;
+                setTimeout(() => {
+                    syncStatus.style.display = 'none';
+                }, 3000);
+            }
+        });
+    } else {
+        syncStatus.innerHTML = `
+            <div class="alert alert-warning" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                Sync mechanism not available. Please refresh the page.
+            </div>
+        `;
+        retryButton.disabled = false;
+    }
+}
+
+// Auto-retry sync every 30 seconds
+setInterval(() => {
+    if (navigator.onLine && window.offlineSync && window.offlineSync.syncPendingData) {
+        window.offlineSync.syncPendingData();
+    }
+}, 30000);
+</script>
+{% endblock %}

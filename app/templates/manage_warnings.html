@@ -1,0 +1,369 @@
+{% extends "base.html" %}
+{% block title %}Manage Teacher Warnings{% endblock %}
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1><i class="fas fa-exclamation-triangle text-warning me-2"></i>Manage Teacher Warnings</h1>
+            </div>
+            
+            <!-- Alert for messages -->
+            <div id="alert-container"></div>
+            
+            <!-- Warning Management Form -->
+            <div class="card shadow-sm">
+                <div class="card-header bg-warning text-dark">
+                    <h5 class="mb-0"><i class="fas fa-user-edit me-2"></i>Update Teacher Warnings</h5>
+                </div>
+                <div class="card-body">
+                    <form id="warningsForm">
+                        <div class="row">
+                            <!-- Teacher Search -->
+                            <div class="col-md-6 mb-3">
+                                <label for="teacherName" class="form-label">
+                                    <i class="fas fa-user me-1"></i>Teacher Name
+                                </label>
+                                <div class="position-relative">
+                                    <input type="text" 
+                                           class="form-control" 
+                                           id="teacherName" 
+                                           name="teacher_name" 
+                                           placeholder="Start typing teacher name..." 
+                                           autocomplete="off" 
+                                           required>
+                                    <div id="teacherSuggestions" class="suggestions-dropdown"></div>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Selection -->
+                            <div class="col-md-3 mb-3">
+                                <label for="action" class="form-label">
+                                    <i class="fas fa-cogs me-1"></i>Action
+                                </label>
+                                <select class="form-select" id="action" name="action" required>
+                                    <option value="">Select Action</option>
+                                    <option value="reset">Reset to 0</option>
+                                    <option value="reduce">Reduce by 1</option>
+                                    <option value="set">Set to specific number</option>
+                                </select>
+                            </div>
+                            
+                            <!-- Warnings Value (for set action) -->
+                            <div class="col-md-3 mb-3">
+                                <label for="warningsValue" class="form-label">
+                                    <i class="fas fa-hashtag me-1"></i>Warnings Value
+                                </label>
+                                <input type="number" 
+                                       class="form-control" 
+                                       id="warningsValue" 
+                                       name="warnings" 
+                                       min="0" 
+                                       max="99" 
+                                       placeholder="Enter number"
+                                       disabled>
+                                <small class="form-text text-muted">Only required for "Set to specific number"</small>
+                            </div>
+                        </div>
+                        
+                        <div class="row">
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-warning">
+                                    <i class="fas fa-save me-2"></i>Update Warnings
+                                </button>
+                                <button type="button" class="btn btn-secondary ms-2" onclick="resetForm()">
+                                    <i class="fas fa-undo me-2"></i>Reset Form
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            
+            <!-- Current Teacher Info (shown after selection) -->
+            <div id="teacherInfo" class="card shadow-sm mt-4" style="display: none;">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Current Teacher Information</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <strong>Name:</strong> <span id="currentTeacherName">-</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Email:</strong> <span id="currentTeacherEmail">-</span>
+                        </div>
+                        <div class="col-md-4">
+                            <strong>Current Warnings:</strong> 
+                            <span id="currentWarnings" class="badge bg-secondary">0</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.suggestion-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #eee;
+}
+
+.suggestion-item:hover {
+    background-color: #f8f9fa;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.card {
+    border: none;
+    border-radius: 10px;
+}
+
+.card-header {
+    border-radius: 10px 10px 0 0 !important;
+}
+
+.form-control:focus {
+    border-color: #ffc107;
+    box-shadow: 0 0 0 0.2rem rgba(255, 193, 7, 0.25);
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border-color: #ffc107;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    border-color: #d39e00;
+    color: #212529;
+}
+</style>
+
+<script>
+let teacherSuggestions = [];
+let selectedTeacher = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    const teacherNameInput = document.getElementById('teacherName');
+    const actionSelect = document.getElementById('action');
+    const warningsValueInput = document.getElementById('warningsValue');
+    const suggestionsDiv = document.getElementById('teacherSuggestions');
+    const warningsForm = document.getElementById('warningsForm');
+    
+    // Enable/disable warnings value input based on action
+    actionSelect.addEventListener('change', function() {
+        if (this.value === 'set') {
+            warningsValueInput.disabled = false;
+            warningsValueInput.required = true;
+        } else {
+            warningsValueInput.disabled = true;
+            warningsValueInput.required = false;
+            warningsValueInput.value = '';
+        }
+    });
+    
+    // Teacher name input with suggestions
+    teacherNameInput.addEventListener('input', function() {
+        const query = this.value.trim();
+        if (query.length >= 2) {
+            searchTeachers(query);
+        } else {
+            hideSuggestions();
+            hideTeacherInfo();
+        }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!e.target.closest('.position-relative')) {
+            hideSuggestions();
+        }
+    });
+    
+    // Form submission
+    warningsForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        submitWarningsUpdate();
+    });
+});
+
+function searchTeachers(query) {
+    fetch(`/api/search-teachers?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(data => {
+            teacherSuggestions = data;
+            showSuggestions(data);
+        })
+        .catch(error => {
+            console.error('Error searching teachers:', error);
+            showAlert('Error searching for teachers', 'danger');
+        });
+}
+
+function showSuggestions(teachers) {
+    const suggestionsDiv = document.getElementById('teacherSuggestions');
+    
+    if (teachers.length === 0) {
+        suggestionsDiv.style.display = 'none';
+        return;
+    }
+    
+    suggestionsDiv.innerHTML = '';
+    teachers.forEach(teacher => {
+        const item = document.createElement('div');
+        item.className = 'suggestion-item';
+        item.innerHTML = `
+            <div><strong>${teacher.name}</strong></div>
+            <div><small class="text-muted">${teacher.email}</small></div>
+        `;
+        item.addEventListener('click', () => selectTeacher(teacher));
+        suggestionsDiv.appendChild(item);
+    });
+    
+    suggestionsDiv.style.display = 'block';
+}
+
+function hideSuggestions() {
+    document.getElementById('teacherSuggestions').style.display = 'none';
+}
+
+function selectTeacher(teacher) {
+    selectedTeacher = teacher;
+    document.getElementById('teacherName').value = teacher.name;
+    hideSuggestions();
+    showTeacherInfo(teacher);
+}
+
+function showTeacherInfo(teacher) {
+    document.getElementById('currentTeacherName').textContent = teacher.name;
+    document.getElementById('currentTeacherEmail').textContent = teacher.email;
+    
+    // Get current warnings (we'll need to fetch this from the server)
+    fetchTeacherWarnings(teacher.name);
+    
+    document.getElementById('teacherInfo').style.display = 'block';
+}
+
+function hideTeacherInfo() {
+    document.getElementById('teacherInfo').style.display = 'none';
+    selectedTeacher = null;
+}
+
+function fetchTeacherWarnings(teacherName) {
+    // Since we don't have a specific endpoint for this, we'll show a placeholder
+    // In a real implementation, you might want to add an endpoint to get teacher details
+    document.getElementById('currentWarnings').textContent = '?';
+    document.getElementById('currentWarnings').className = 'badge bg-secondary';
+}
+
+function submitWarningsUpdate() {
+    const formData = new FormData(document.getElementById('warningsForm'));
+    const data = {
+        teacher_name: formData.get('teacher_name'),
+        action: formData.get('action'),
+        warnings: formData.get('warnings')
+    };
+    
+    if (!data.teacher_name || !data.action) {
+        showAlert('Please fill in all required fields', 'danger');
+        return;
+    }
+    
+    if (data.action === 'set' && (!data.warnings || data.warnings < 0)) {
+        showAlert('Please enter a valid warnings value', 'danger');
+        return;
+    }
+    
+    fetch('/api/manage-warnings', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (result.success) {
+            showAlert(result.message, 'success');
+            updateTeacherInfo(result.teacher);
+            resetForm();
+        } else {
+            showAlert(result.message, 'danger');
+        }
+    })
+    .catch(error => {
+        console.error('Error updating warnings:', error);
+        showAlert('Error updating warnings. Please try again.', 'danger');
+    });
+}
+
+function updateTeacherInfo(teacher) {
+    if (teacher) {
+        document.getElementById('currentTeacherName').textContent = teacher.name;
+        document.getElementById('currentTeacherEmail').textContent = teacher.email;
+        
+        const warningsBadge = document.getElementById('currentWarnings');
+        warningsBadge.textContent = teacher.new_warnings;
+        
+        // Update badge color based on warnings level
+        warningsBadge.className = 'badge ';
+        if (teacher.new_warnings >= 3) {
+            warningsBadge.className += 'bg-danger';
+        } else if (teacher.new_warnings >= 1) {
+            warningsBadge.className += 'bg-warning text-dark';
+        } else {
+            warningsBadge.className += 'bg-success';
+        }
+    }
+}
+
+function resetForm() {
+    document.getElementById('warningsForm').reset();
+    document.getElementById('warningsValue').disabled = true;
+    document.getElementById('warningsValue').required = false;
+    hideTeacherInfo();
+    hideSuggestions();
+}
+
+function showAlert(message, type) {
+    const alertContainer = document.getElementById('alert-container');
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+    
+    alertContainer.innerHTML = '';
+    alertContainer.appendChild(alertDiv);
+    
+    // Auto-hide success alerts after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            alertDiv.remove();
+        }, 5000);
+    }
+}
+</script>
+{% endblock %}

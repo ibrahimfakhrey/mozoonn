@@ -1,0 +1,149 @@
+{% extends "base.html" %}
+
+{% block title %}View Assignments{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-users"></i> Teacher Assignments</h2>
+                <a href="{{ url_for('assign_roles') }}" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Assign New Roles
+                </a>
+            </div>
+
+            {% if daily_plans %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5><i class="fas fa-calendar-week"></i> Daily Supervisor Plans</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for plan in daily_plans %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card border-primary">
+                                <div class="card-header bg-primary text-white">
+                                    <h6 class="mb-0">{{ plan.name }}</h6>
+                                    <small>{{ plan.date.strftime('%Y-%m-%d') if plan.date else 'No date set' }}</small>
+                                </div>
+                                <div class="card-body">
+                                    {% if plan.sections %}
+                                        {% for section in plan.sections %}
+                                        <div class="mb-2">
+                                            <strong>{{ section.name }}:</strong>
+                                            {% if section.assignments %}
+                                                {% for assignment in section.assignments %}
+                                                <span class="badge badge-info">{{ assignment.teacher.name }}</span>
+                                                {% endfor %}
+                                            {% else %}
+                                                <span class="text-muted">No assignments</span>
+                                            {% endif %}
+                                        </div>
+                                        {% endfor %}
+                                    {% else %}
+                                        <p class="text-muted">No sections defined</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if plans %}
+            {% for plan in plans %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <div class="row align-items-center">
+                        <div class="col">
+                            <h5 class="mb-0">{{ plan.name }}</h5>
+                            <small class="text-muted">{{ plan.date.strftime('%Y-%m-%d') if plan.date else 'No date set' }}</small>
+                        </div>
+                        <div class="col-auto">
+                            <span class="badge badge-primary">{{ plan.sections|length }} sections</span>
+                            <span class="badge badge-success">{{ total_assignments }} assignments</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    {% if plan.sections %}
+                    <div class="row">
+                        {% for section in plan.sections %}
+                        <div class="col-md-6 mb-3">
+                            <div class="card">
+                                <div class="card-header bg-light">
+                                    <h6 class="mb-0">{{ section.name }}</h6>
+                                    <small class="text-muted">{{ section.assignments|length }} teachers</small>
+                                </div>
+                                <div class="card-body">
+                                    {% if section.assignments %}
+                                    <div class="table-responsive">
+                                        <table class="table table-sm">
+                                            <thead>
+                                                <tr>
+                                                    <th>Teacher</th>
+                                                    <th>Status</th>
+                                                    <th>Contact</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {% for assignment in section.assignments %}
+                                                <tr>
+                                                    <td>
+                                                        <strong>{{ assignment.teacher.name }}</strong>
+                                                        {% if assignment.location %}
+                                                        <br><small class="text-muted">{{ assignment.location }}</small>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if assignment.teacher.phone %}
+                                                        <span class="badge badge-success">Registered</span>
+                                                        {% else %}
+                                                        <span class="badge badge-warning">Unregistered</span>
+                                                        {% endif %}
+                                                    </td>
+                                                    <td>
+                                                        {% if assignment.teacher.phone %}
+                                                        <small>{{ assignment.teacher.phone }}</small>
+                                                        {% else %}
+                                                        <small class="text-muted">No contact</small>
+                                                        {% endif %}
+                                                    </td>
+                                                </tr>
+                                                {% endfor %}
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {% else %}
+                                    <p class="text-muted">No assignments for this section</p>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted">No sections defined for this plan</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="card">
+                <div class="card-body text-center">
+                    <i class="fas fa-clipboard-list fa-3x text-muted mb-3"></i>
+                    <h5>No Assignments Found</h5>
+                    <p class="text-muted">No teacher assignments have been created yet.</p>
+                    <a href="{{ url_for('assign_roles') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> Create First Assignment
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

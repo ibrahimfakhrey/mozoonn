@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Upload Plan{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3 class="mb-0">Upload Dismissal Plan</h3>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">Upload a Word document containing the dismissal plan. The file will be processed and saved as a resource for teachers.</p>
+                    
+                    <form method="POST" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="plan_file" class="form-label">Select Word Document</label>
+                            <input type="file" class="form-control" id="plan_file" name="plan_file" 
+                                   accept=".docx,.doc" required>
+                            <div class="form-text">Accepted formats: .docx, .doc</div>
+                        </div>
+                        
+                        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                            <a href="{{ url_for('main.resources') }}" class="btn btn-secondary me-md-2">
+                                View Resources
+                            </a>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-upload"></i> Upload Plan
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

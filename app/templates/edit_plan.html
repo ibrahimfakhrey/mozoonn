@@ -1,0 +1,424 @@
+{% extends "base.html" %}
+{% block title %}Edit Daily Plan{% endblock %}
+{% block content %}
+<div class="row justify-content-center">
+  <div class="col-md-8">
+    <div class="card">
+      <div class="card-header">
+        <h2 class="card-title mb-0">
+          <i class="fas fa-edit me-2"></i>Edit Daily Plan
+        </h2>
+      </div>
+      <div class="card-body">
+        <form id="editPlanForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="day" class="form-label">
+                  <i class="fas fa-calendar-day me-1"></i>Day of Week
+                </label>
+                <select class="form-select" id="day" name="day" required>
+                  <option value="">Select a day</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="teacher_name" class="form-label">
+                  <i class="fas fa-user me-1"></i>Current Teacher Name
+                </label>
+                <div class="autocomplete-container">
+                  <input type="text" class="form-control" id="teacher_name" name="teacher_name" 
+                         placeholder="Enter current teacher name or placeholder" required autocomplete="off">
+                  <div id="teacher_name_suggestions" class="autocomplete-suggestions"></div>
+                </div>
+                <div class="form-text">Enter the exact name as it appears in the plan</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="new_teacher_name" class="form-label">
+                  <i class="fas fa-user-edit me-1"></i>New Teacher Name
+                </label>
+                <div class="autocomplete-container">
+                  <input type="text" class="form-control" id="new_teacher_name" name="new_teacher_name" 
+                         placeholder="Enter new teacher name (optional)" autocomplete="off">
+                  <div id="new_teacher_name_suggestions" class="autocomplete-suggestions"></div>
+                </div>
+                <div class="form-text">Leave empty to keep current name</div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="teacher_email" class="form-label">
+                  <i class="fas fa-envelope me-1"></i>Teacher Email
+                </label>
+                <div class="autocomplete-container">
+                  <input type="email" class="form-control" id="teacher_email" name="teacher_email" 
+                         placeholder="teacher@example.com" required autocomplete="off">
+                  <div id="teacher_email_suggestions" class="autocomplete-suggestions"></div>
+                </div>
+                <div class="form-text">Valid email address required</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+            <button type="button" class="btn btn-secondary me-md-2" onclick="resetForm()">
+              <i class="fas fa-undo me-1"></i>Reset
+            </button>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-save me-1"></i>Update Plan
+            </button>
+          </div>
+        </form>
+
+        <!-- Loading indicator -->
+        <div id="loadingIndicator" class="text-center mt-3" style="display: none;">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+          <p class="mt-2">Updating plan...</p>
+        </div>
+
+        <!-- Result messages -->
+        <div id="resultMessage" class="mt-3" style="display: none;"></div>
+      </div>
+    </div>
+
+    <!-- Help section -->
+    <div class="card mt-4">
+      <div class="card-header">
+        <h5 class="card-title mb-0">
+          <i class="fas fa-question-circle me-2"></i>How to Use
+        </h5>
+      </div>
+      <div class="card-body">
+        <ul class="list-unstyled">
+          <li class="mb-2">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Select the day of the week you want to edit
+          </li>
+          <li class="mb-2">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Enter the current teacher name exactly as it appears in the plan
+          </li>
+          <li class="mb-2">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Optionally provide a new name for the teacher
+          </li>
+          <li class="mb-2">
+            <i class="fas fa-check-circle text-success me-2"></i>
+            Enter a valid email address for the teacher
+          </li>
+          <li>
+            <i class="fas fa-info-circle text-info me-2"></i>
+            You can update existing teachers or convert placeholders (like "PE") to real teachers
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Autocomplete functionality
+let teacherNameTimeout;
+let teacherEmailTimeout;
+
+function setupAutocomplete(inputId, suggestionsId, searchType) {
+    const input = document.getElementById(inputId);
+    const suggestions = document.getElementById(suggestionsId);
+    
+    input.addEventListener('input', function() {
+        const query = this.value.trim();
+        
+        // Clear previous timeout
+        if (searchType === 'name') {
+            clearTimeout(teacherNameTimeout);
+        } else {
+            clearTimeout(teacherEmailTimeout);
+        }
+        
+        if (query.length < 2) {
+            suggestions.style.display = 'none';
+            return;
+        }
+        
+        // Debounce the search
+        const timeout = setTimeout(async () => {
+            try {
+                const response = await fetch(`/api/search-teachers?q=${encodeURIComponent(query)}&type=${searchType}`);
+                const results = await response.json();
+                
+                if (results.length > 0) {
+                    displaySuggestions(results, suggestions, input, searchType);
+                } else {
+                    suggestions.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Error fetching suggestions:', error);
+                suggestions.style.display = 'none';
+            }
+        }, 300);
+        
+        if (searchType === 'name') {
+            teacherNameTimeout = timeout;
+        } else {
+            teacherEmailTimeout = timeout;
+        }
+    });
+    
+    // Hide suggestions when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!input.contains(e.target) && !suggestions.contains(e.target)) {
+            suggestions.style.display = 'none';
+        }
+    });
+}
+
+function displaySuggestions(results, suggestionsContainer, input, searchType) {
+    suggestionsContainer.innerHTML = '';
+    
+    results.forEach(result => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        
+        if (searchType === 'name') {
+            const isPlaceholder = result.is_placeholder;
+            item.innerHTML = `
+                <div class="suggestion-name">
+                    ${result.name}
+                    ${isPlaceholder ? '<span class="badge bg-secondary ms-2">Placeholder</span>' : ''}
+                </div>
+                ${result.email ? `<div class="suggestion-email">${result.email}</div>` : ''}
+            `;
+            
+            item.addEventListener('click', () => {
+                input.value = result.name;
+                // Only auto-fill email for current teacher name field, not new teacher name
+                if (result.email && !isPlaceholder && input.id === 'teacher_name') {
+                    document.getElementById('teacher_email').value = result.email;
+                }
+                suggestionsContainer.style.display = 'none';
+            });
+        } else {
+            item.innerHTML = `
+                <div class="suggestion-email">${result.email}</div>
+                <div class="suggestion-name">${result.name}</div>
+            `;
+            
+            item.addEventListener('click', () => {
+                input.value = result.email;
+                document.getElementById('teacher_name').value = result.name;
+                suggestionsContainer.style.display = 'none';
+            });
+        }
+        
+        suggestionsContainer.appendChild(item);
+    });
+    
+    suggestionsContainer.style.display = 'block';
+}
+
+// Initialize autocomplete when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    setupAutocomplete('teacher_name', 'teacher_name_suggestions', 'name');
+    setupAutocomplete('teacher_email', 'teacher_email_suggestions', 'email');
+    setupAutocomplete('new_teacher_name', 'new_teacher_name_suggestions', 'name');
+});
+
+document.getElementById('editPlanForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    
+    const form = e.target;
+    const formData = new FormData(form);
+    const loadingIndicator = document.getElementById('loadingIndicator');
+    const resultMessage = document.getElementById('resultMessage');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Show loading indicator
+    loadingIndicator.style.display = 'block';
+    resultMessage.style.display = 'none';
+    submitButton.disabled = true;
+    
+    // Prepare data for API
+    const data = {
+        day: formData.get('day'),
+        teacher_name: formData.get('teacher_name'),
+        teacher_email: formData.get('teacher_email')
+    };
+    
+    // Add new teacher name if provided
+    if (formData.get('new_teacher_name').trim()) {
+        data.new_teacher_name = formData.get('new_teacher_name');
+    }
+    
+    try {
+        const response = await fetch('/api/edit-plan', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
+        
+        const result = await response.json();
+        
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+        submitButton.disabled = false;
+        
+        // Show result message
+        resultMessage.style.display = 'block';
+        
+        if (result.status === 'success') {
+            resultMessage.innerHTML = `
+                <div class="alert alert-success" role="alert">
+                    <i class="fas fa-check-circle me-2"></i>
+                    <strong>Success!</strong> ${result.message}
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <strong>Day:</strong> ${result.data.day}<br>
+                            <strong>Teacher:</strong> ${result.data.teacher_name}<br>
+                            <strong>Email:</strong> ${result.data.teacher_email}
+                        </div>
+                        <div class="col-md-6">
+                            <strong>Section:</strong> ${result.data.section}<br>
+                            <strong>Location:</strong> ${result.data.place_task}
+                        </div>
+                    </div>
+                </div>
+            `;
+            // Reset form on success
+            form.reset();
+        } else {
+            resultMessage.innerHTML = `
+                <div class="alert alert-danger" role="alert">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    <strong>Error!</strong> ${result.message}
+                </div>
+            `;
+        }
+    } catch (error) {
+        // Hide loading indicator
+        loadingIndicator.style.display = 'none';
+        submitButton.disabled = false;
+        
+        // Show error message
+        resultMessage.style.display = 'block';
+        resultMessage.innerHTML = `
+            <div class="alert alert-danger" role="alert">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                <strong>Network Error!</strong> Unable to connect to the server. Please check your connection and try again.
+            </div>
+        `;
+    }
+});
+
+function resetForm() {
+    document.getElementById('editPlanForm').reset();
+    document.getElementById('resultMessage').style.display = 'none';
+    document.getElementById('loadingIndicator').style.display = 'none';
+}
+</script>
+
+<style>
+/* Autocomplete Styles */
+    .autocomplete-container {
+      position: relative;
+    }
+    
+    .autocomplete-suggestions {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: white;
+      border: 1px solid #ddd;
+      border-top: none;
+      border-radius: 0 0 8px 8px;
+      max-height: 200px;
+      overflow-y: auto;
+      z-index: 1000;
+      display: none;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    
+    .autocomplete-item {
+      padding: 12px 16px;
+      cursor: pointer;
+      border-bottom: 1px solid #f0f0f0;
+      transition: background-color 0.2s ease;
+    }
+    
+    .autocomplete-item:hover {
+      background-color: #f8f9fa;
+    }
+    
+    .autocomplete-item:last-child {
+      border-bottom: none;
+    }
+    
+    .suggestion-name {
+      font-weight: 500;
+      color: #333;
+      margin-bottom: 2px;
+    }
+    
+    .suggestion-email {
+      font-size: 0.9em;
+      color: #666;
+    }
+    
+    .autocomplete-item .badge {
+      font-size: 0.7em;
+    }
+
+    .card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    border: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.125);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+    background-color: #0b5ed7;
+    border-color: #0a58ca;
+}
+
+.spinner-border {
+    width: 2rem;
+    height: 2rem;
+}
+
+.alert {
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+}
+</style>
+{% endblock %}

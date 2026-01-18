@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Late Warning</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #ffc107;
+            color: #212529;
+            padding: 20px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .warning-badge {
+            display: inline-block;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            font-size: 18px;
+            margin: 15px 0;
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            color: #856404;
+            width: 35%;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid #ffc107;
+        }
+        .footer h3 {
+            margin: 0;
+            color: #856404;
+            font-size: 18px;
+        }
+        .message {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        .late-count {
+            font-size: 32px;
+            font-weight: bold;
+            color: #856404;
+            text-align: center;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⏰ Late Arrival Warning</h1>
+        </div>
+        
+        <div class="content">
+            <p>Dear <strong>{{ teacher_name }}</strong>,</p>
+            
+            <div class="message">
+                <strong>You have been marked as LATE for your dismissal duty.</strong>
+            </div>
+            
+            <table class="info-table">
+                <tr>
+                    <td>📅 Date:</td>
+                    <td>{{ date }}</td>
+                </tr>
+                <tr>
+                    <td>📆 Day:</td>
+                    <td>{{ day }}</td>
+                </tr>
+                <tr>
+                    <td>📍 Section:</td>
+                    <td>{{ section }}</td>
+                </tr>
+                <tr>
+                    <td>📋 Task/Place:</td>
+                    <td>{{ task_place }}</td>
+                </tr>
+            </table>
+            
+            <div class="late-count">
+                Late Warning {{ late_number }} of 3
+            </div>
+
+            <p class="warning-badge">
+                Current Late Count: {{ late_number }}
+            </p>
+
+            <p style="color: #856404; font-weight: bold;">
+                Please note: Your next late arrival (2nd) will result in a <strong>1/4 Day salary deduction</strong>, and a 3rd late will result in a <strong>1/2 Day salary deduction</strong>.
+            </p>
+            
+            <p>Please ensure you arrive on time for your assigned dismissal duties. Punctuality is essential for the safety and organization of student dismissal.</p>
+        </div>
+        
+        <div class="footer">
+            <h3>AMS School</h3>
+            <p style="margin: 5px 0; color: #666;">Dismissal Duty Management System</p>
+        </div>
+    </div>
+</body>
+</html>

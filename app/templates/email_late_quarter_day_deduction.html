@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>1/4 Day Deduction Notice - Late</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 3px solid #fd7e14;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #fd7e14;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 26px;
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .deduction-badge {
+            display: block;
+            padding: 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            font-size: 22px;
+            margin: 20px 0;
+            background-color: #fd7e14;
+            color: white;
+            text-align: center;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .info-table td:first-child {
+            font-weight: bold;
+            color: #fd7e14;
+            width: 35%;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 3px solid #fd7e14;
+        }
+        .footer h3 {
+            margin: 0;
+            color: #fd7e14;
+            font-size: 18px;
+        }
+        .message {
+            background-color: #fff3cd;
+            border: 2px solid #fd7e14;
+            color: #856404;
+            padding: 20px;
+            border-radius: 5px;
+            margin: 20px 0;
+            text-align: center;
+        }
+        .reset-notice {
+            background-color: #d4edda;
+            border: 1px solid #28a745;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SALARY DEDUCTION NOTICE</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear <strong>{{ teacher_name }}</strong>,</p>
+
+            <div class="message">
+                <strong>IMPORTANT: This is your 2nd late arrival!</strong>
+            </div>
+
+            <div class="deduction-badge">
+                1/4 DAY SALARY DEDUCTION
+            </div>
+
+            <table class="info-table">
+                <tr>
+                    <td>Date:</td>
+                    <td>{{ date }}</td>
+                </tr>
+                <tr>
+                    <td>Day:</td>
+                    <td>{{ day }}</td>
+                </tr>
+                <tr>
+                    <td>Section:</td>
+                    <td>{{ section }}</td>
+                </tr>
+                <tr>
+                    <td>Task/Place:</td>
+                    <td>{{ task_place }}</td>
+                </tr>
+            </table>
+
+            <p style="font-size: 16px; color: #856404; font-weight: bold;">
+                You have been late <strong>2 times</strong> for your dismissal duty. As per the school policy, a <strong>1/4 Day salary deduction</strong> will be applied to your next payroll.
+            </p>
+
+            <div class="reset-notice">
+                <strong>Notice:</strong> Please ensure punctual attendance to your dismissal duties. Your next late arrival will result in a 1/2 day deduction.
+            </div>
+
+            <p>If you believe this is an error or have a valid excuse, please contact the administration immediately with supporting documentation.</p>
+        </div>
+
+        <div class="footer">
+            <h3>AMS School</h3>
+            <p style="margin: 5px 0; color: #666;">Dismissal Duty Management System</p>
+        </div>
+    </div>
+</body>
+</html>

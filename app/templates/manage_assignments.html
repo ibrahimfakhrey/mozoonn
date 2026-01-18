@@ -1,0 +1,506 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Assignments - Dismissal Checker{% endblock %}
+
+{% block content %}
+<div class="row">
+  <div class="col-12">
+    <h1 class="mb-4"><i class="fas fa-tasks me-2"></i>Manage Duty Assignments</h1>
+  </div>
+</div>
+
+<!-- Navigation Tabs -->
+<ul class="nav nav-tabs mb-4" id="assignmentTabs" role="tablist">
+  <li class="nav-item" role="presentation">
+    <button class="nav-link active" id="add-tab" data-bs-toggle="tab" data-bs-target="#add-assignment" type="button" role="tab">
+      <i class="fas fa-plus me-1"></i>Add Assignment
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="edit-tab" data-bs-toggle="tab" data-bs-target="#edit-assignment" type="button" role="tab">
+      <i class="fas fa-edit me-1"></i>Edit Assignment
+    </button>
+  </li>
+  <li class="nav-item" role="presentation">
+    <button class="nav-link" id="delete-tab" data-bs-toggle="tab" data-bs-target="#delete-assignment" type="button" role="tab">
+      <i class="fas fa-trash me-1"></i>Delete Assignment
+    </button>
+  </li>
+</ul>
+
+<!-- Tab Content -->
+<div class="tab-content" id="assignmentTabContent">
+  
+  <!-- Add Assignment Tab -->
+  <div class="tab-pane fade show active" id="add-assignment" role="tabpanel">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0"><i class="fas fa-plus me-2"></i>Add New Assignment</h5>
+      </div>
+      <div class="card-body">
+        <form id="addAssignmentForm">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="add_day_of_week" class="form-label">Day of Week</label>
+                <select class="form-select" id="add_day_of_week" name="day_of_week" required>
+                  <option value="">Select Day</option>
+                  <option value="Monday">Monday</option>
+                  <option value="Tuesday">Tuesday</option>
+                  <option value="Wednesday">Wednesday</option>
+                  <option value="Thursday">Thursday</option>
+                  <option value="Friday">Friday</option>
+                  <option value="Saturday">Saturday</option>
+                  <option value="Sunday">Sunday</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="add_section_name" class="form-label">Section Name</label>
+                <input type="text" class="form-control" id="add_section_name" name="section_name" required>
+              </div>
+            </div>
+          </div>
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="add_teacher_name" class="form-label">Teacher Name</label>
+                <input type="text" class="form-control" id="add_teacher_name" name="teacher_name" required>
+                <div class="form-text">Start typing to search for existing teachers</div>
+                <div id="teacher-suggestions" class="list-group position-absolute" style="z-index: 1000; display: none;"></div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="add_teacher_email" class="form-label">Teacher Email (Optional)</label>
+                <input type="email" class="form-control" id="add_teacher_email" name="teacher_email">
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="add_place_task" class="form-label">Place/Task Description</label>
+            <textarea class="form-control" id="add_place_task" name="place_task" rows="3"></textarea>
+          </div>
+          
+          <button type="submit" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Add Assignment
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Edit Assignment Tab -->
+  <div class="tab-pane fade" id="edit-assignment" role="tabpanel">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0"><i class="fas fa-edit me-2"></i>Edit Assignment</h5>
+      </div>
+      <div class="card-body">
+        <!-- Search for Assignment to Edit -->
+        <div class="mb-4">
+          <label for="search_assignment" class="form-label">Search Assignment</label>
+          <div class="input-group">
+            <select class="form-select" id="search_day" name="search_day">
+              <option value="">All Days</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+            <input type="text" class="form-control" id="search_assignment" placeholder="Search by teacher name or section">
+            <button class="btn btn-outline-secondary" type="button" id="searchAssignmentBtn">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Assignment Search Results -->
+        <div id="assignment-results" class="mb-4" style="display: none;">
+          <h6>Select Assignment to Edit:</h6>
+          <div id="assignment-list" class="list-group"></div>
+        </div>
+        
+        <!-- Edit Form -->
+        <form id="editAssignmentForm" style="display: none;">
+          <input type="hidden" id="edit_assignment_id" name="assignment_id">
+          
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="edit_section_name" class="form-label">Section Name</label>
+                <input type="text" class="form-control" id="edit_section_name" name="section_name">
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="edit_order" class="form-label">Order</label>
+                <input type="number" class="form-control" id="edit_order" name="order" min="1">
+              </div>
+            </div>
+          </div>
+          
+          <div class="mb-3">
+            <label for="edit_place_task" class="form-label">Place/Task Description</label>
+            <textarea class="form-control" id="edit_place_task" name="place_task" rows="3"></textarea>
+          </div>
+          
+          <div class="d-flex gap-2">
+            <button type="submit" class="btn btn-success">
+              <i class="fas fa-save me-1"></i>Update Assignment
+            </button>
+            <button type="button" class="btn btn-secondary" id="cancelEditBtn">
+              <i class="fas fa-times me-1"></i>Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Delete Assignment Tab -->
+  <div class="tab-pane fade" id="delete-assignment" role="tabpanel">
+    <div class="card">
+      <div class="card-header">
+        <h5 class="card-title mb-0"><i class="fas fa-trash me-2"></i>Delete Assignment</h5>
+      </div>
+      <div class="card-body">
+        <!-- Search for Assignment to Delete -->
+        <div class="mb-4">
+          <label for="delete_search_assignment" class="form-label">Search Assignment</label>
+          <div class="input-group">
+            <select class="form-select" id="delete_search_day" name="delete_search_day">
+              <option value="">All Days</option>
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+              <option value="Wednesday">Wednesday</option>
+              <option value="Thursday">Thursday</option>
+              <option value="Friday">Friday</option>
+              <option value="Saturday">Saturday</option>
+              <option value="Sunday">Sunday</option>
+            </select>
+            <input type="text" class="form-control" id="delete_search_assignment" placeholder="Search by teacher name or section">
+            <button class="btn btn-outline-secondary" type="button" id="deleteSearchAssignmentBtn">
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+        </div>
+        
+        <!-- Delete Assignment Results -->
+        <div id="delete-assignment-results" class="mb-4" style="display: none;">
+          <h6>Select Assignment to Delete:</h6>
+          <div id="delete-assignment-list" class="list-group"></div>
+        </div>
+        
+        <!-- Confirmation Modal would be triggered by JavaScript -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Success/Error Messages -->
+<div id="message-container" class="mt-4"></div>
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Confirm Delete</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to delete this assignment?</p>
+        <div id="delete-assignment-details"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+          <i class="fas fa-trash me-1"></i>Delete Assignment
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// Global variables
+let selectedAssignmentForEdit = null;
+let selectedAssignmentForDelete = null;
+
+// Teacher search functionality
+document.getElementById('add_teacher_name').addEventListener('input', function() {
+    const query = this.value.trim();
+    const suggestionsDiv = document.getElementById('teacher-suggestions');
+    
+    if (query.length < 2) {
+        suggestionsDiv.style.display = 'none';
+        return;
+    }
+    
+    fetch(`/api/search-teachers?q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(teachers => {
+            if (teachers.length > 0) {
+                suggestionsDiv.innerHTML = teachers.map(teacher => 
+                    `<button type="button" class="list-group-item list-group-item-action" 
+                     onclick="selectTeacher('${teacher.name}', '${teacher.email}')">
+                        <strong>${teacher.name}</strong><br>
+                        <small class="text-muted">${teacher.email}</small>
+                     </button>`
+                ).join('');
+                suggestionsDiv.style.display = 'block';
+            } else {
+                suggestionsDiv.style.display = 'none';
+            }
+        })
+        .catch(error => {
+            console.error('Error searching teachers:', error);
+            suggestionsDiv.style.display = 'none';
+        });
+});
+
+function selectTeacher(name, email) {
+    document.getElementById('add_teacher_name').value = name;
+    document.getElementById('add_teacher_email').value = email;
+    document.getElementById('teacher-suggestions').style.display = 'none';
+}
+
+// Hide suggestions when clicking outside
+document.addEventListener('click', function(e) {
+    if (!e.target.closest('#add_teacher_name') && !e.target.closest('#teacher-suggestions')) {
+        document.getElementById('teacher-suggestions').style.display = 'none';
+    }
+});
+
+// Add Assignment Form
+document.getElementById('addAssignmentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    fetch('/api/add-assignment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        showMessage(result.success ? 'success' : 'danger', result.message);
+        if (result.success) {
+            this.reset();
+        }
+    })
+    .catch(error => {
+        showMessage('danger', 'Error adding assignment: ' + error.message);
+    });
+});
+
+// Search assignments for editing
+document.getElementById('searchAssignmentBtn').addEventListener('click', searchAssignments);
+document.getElementById('search_assignment').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchAssignments();
+    }
+});
+
+function searchAssignments() {
+    const day = document.getElementById('search_day').value;
+    const query = document.getElementById('search_assignment').value.trim();
+    
+    // This would need a new API endpoint to search assignments
+    // For now, we'll simulate with existing data
+    fetch(`/api/search-assignments?day=${day}&q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(assignments => {
+            displayAssignments(assignments, 'assignment-list', 'edit');
+            document.getElementById('assignment-results').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error searching assignments:', error);
+            showMessage('danger', 'Error searching assignments');
+        });
+}
+
+// Search assignments for deletion
+document.getElementById('deleteSearchAssignmentBtn').addEventListener('click', searchAssignmentsForDelete);
+document.getElementById('delete_search_assignment').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        searchAssignmentsForDelete();
+    }
+});
+
+function searchAssignmentsForDelete() {
+    const day = document.getElementById('delete_search_day').value;
+    const query = document.getElementById('delete_search_assignment').value.trim();
+    
+    fetch(`/api/search-assignments?day=${day}&q=${encodeURIComponent(query)}`)
+        .then(response => response.json())
+        .then(assignments => {
+            displayAssignments(assignments, 'delete-assignment-list', 'delete');
+            document.getElementById('delete-assignment-results').style.display = 'block';
+        })
+        .catch(error => {
+            console.error('Error searching assignments:', error);
+            showMessage('danger', 'Error searching assignments');
+        });
+}
+
+function displayAssignments(assignments, containerId, action) {
+    const container = document.getElementById(containerId);
+    
+    if (assignments.length === 0) {
+        container.innerHTML = '<div class="list-group-item">No assignments found</div>';
+        return;
+    }
+    
+    container.innerHTML = assignments.map(assignment => 
+        `<button type="button" class="list-group-item list-group-item-action" 
+         onclick="selectAssignmentFor${action.charAt(0).toUpperCase() + action.slice(1)}(${JSON.stringify(assignment).replace(/"/g, '&quot;')})">
+            <div class="d-flex w-100 justify-content-between">
+                <h6 class="mb-1">${assignment.teacher_name}</h6>
+                <small>${assignment.day}</small>
+            </div>
+            <p class="mb-1"><strong>Section:</strong> ${assignment.section}</p>
+            <small><strong>Task:</strong> ${assignment.place_task || 'No task specified'}</small>
+         </button>`
+    ).join('');
+}
+
+function selectAssignmentForEdit(assignment) {
+    selectedAssignmentForEdit = assignment;
+    
+    document.getElementById('edit_assignment_id').value = assignment.id;
+    document.getElementById('edit_section_name').value = assignment.section;
+    document.getElementById('edit_place_task').value = assignment.place_task || '';
+    document.getElementById('edit_order').value = assignment.order || 1;
+    
+    document.getElementById('editAssignmentForm').style.display = 'block';
+}
+
+function selectAssignmentForDelete(assignment) {
+    selectedAssignmentForDelete = assignment;
+    
+    document.getElementById('delete-assignment-details').innerHTML = `
+        <strong>Teacher:</strong> ${assignment.teacher_name}<br>
+        <strong>Day:</strong> ${assignment.day}<br>
+        <strong>Section:</strong> ${assignment.section}<br>
+        <strong>Task:</strong> ${assignment.place_task || 'No task specified'}
+    `;
+    
+    new bootstrap.Modal(document.getElementById('deleteConfirmModal')).show();
+}
+
+// Edit Assignment Form
+document.getElementById('editAssignmentForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const formData = new FormData(this);
+    const data = Object.fromEntries(formData.entries());
+    
+    fetch('/api/edit-assignment', {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => response.json())
+    .then(result => {
+        showMessage(result.success ? 'success' : 'danger', result.message);
+        if (result.success) {
+            this.style.display = 'none';
+            document.getElementById('assignment-results').style.display = 'none';
+        }
+    })
+    .catch(error => {
+        showMessage('danger', 'Error updating assignment: ' + error.message);
+    });
+});
+
+// Cancel edit
+document.getElementById('cancelEditBtn').addEventListener('click', function() {
+    document.getElementById('editAssignmentForm').style.display = 'none';
+    document.getElementById('assignment-results').style.display = 'none';
+});
+
+// Confirm delete
+document.getElementById('confirmDeleteBtn').addEventListener('click', function() {
+    if (!selectedAssignmentForDelete) return;
+    
+    fetch('/api/delete-assignment', {
+        method: 'DELETE',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ assignment_id: selectedAssignmentForDelete.id })
+    })
+    .then(response => response.json())
+    .then(result => {
+        showMessage(result.success ? 'success' : 'danger', result.message);
+        if (result.success) {
+            bootstrap.Modal.getInstance(document.getElementById('deleteConfirmModal')).hide();
+            document.getElementById('delete-assignment-results').style.display = 'none';
+        }
+    })
+    .catch(error => {
+        showMessage('danger', 'Error deleting assignment: ' + error.message);
+    });
+});
+
+// Utility function to show messages
+function showMessage(type, message) {
+    const container = document.getElementById('message-container');
+    container.innerHTML = `
+        <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+            <i class="fas fa-info-circle me-2"></i>${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    `;
+    
+    // Auto-hide success messages after 5 seconds
+    if (type === 'success') {
+        setTimeout(() => {
+            const alert = container.querySelector('.alert');
+            if (alert) {
+                bootstrap.Alert.getOrCreateInstance(alert).close();
+            }
+        }, 5000);
+    }
+}
+</script>
+
+<style>
+.position-relative {
+    position: relative;
+}
+
+#teacher-suggestions {
+    max-height: 200px;
+    overflow-y: auto;
+    width: 100%;
+}
+
+.list-group-item-action:hover {
+    background-color: #f8f9fa;
+}
+
+.tab-content {
+    min-height: 400px;
+}
+
+.card {
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+}
+</style>
+
+{% endblock %}
