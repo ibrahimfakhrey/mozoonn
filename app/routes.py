@@ -23,12 +23,17 @@ from xlrd import XL_CELL_NUMBER, open_workbook
 from . import db
 from .models import AttendanceRecord, DutyAssignment, DutyPlan, DutySection, Teacher
 from .email_service import (
-    send_bulk_attendance_notifications, 
+    send_bulk_attendance_notifications,
     send_attendance_notification,
     send_absence_warning_email,
     send_absence_deduction_email,
     send_late_warning_email,
-    send_late_deduction_email
+    send_late_deduction_email,
+    ADMIN_CC_EMAILS,
+    SMTP_SERVER,
+    SMTP_PORT,
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD
 )
 
 main_bp = Blueprint("main", __name__)
@@ -322,11 +327,96 @@ def test_email():
     
     # Build response
     success_count = sum(1 for r in results.values() if r and r.get('success'))
-    
+
     return jsonify({
         'success': success_count == 4,
         'message': f'Sent {success_count}/4 test emails to {test_email_address}',
         'results': results
+    })
+
+
+@main_bp.route("/system-test")
+def system_test():
+    """
+    Simple test route to verify the email system is working.
+    Sends a test email to all administrators.
+    """
+    import smtplib
+    from email.mime.text import MIMEText
+    from email.mime.multipart import MIMEMultipart
+    from datetime import datetime
+
+    results = {
+        'smtp_connection': False,
+        'email_sent': False,
+        'admins': ADMIN_CC_EMAILS,
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'errors': []
+    }
+
+    try:
+        # Test 1: SMTP Connection
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            results['smtp_connection'] = True
+
+            # Test 2: Send test email to admins
+            msg = MIMEMultipart('alternative')
+            msg['From'] = EMAIL_ADDRESS
+            msg['To'] = ', '.join(ADMIN_CC_EMAILS)
+            msg['Subject'] = f"🔧 System Test - Dismissal Checker Working - {results['timestamp']}"
+
+            html_body = f"""
+            <html>
+            <body style="font-family: Arial, sans-serif; padding: 20px;">
+                <h2 style="color: #28a745;">✅ System Test Successful</h2>
+                <p>This is a test email to confirm the Dismissal Checker email system is working correctly.</p>
+                <hr>
+                <table style="border-collapse: collapse; width: 100%; max-width: 500px;">
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Timestamp:</strong></td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{results['timestamp']}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;"><strong>SMTP Server:</strong></td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{SMTP_SERVER}:{SMTP_PORT}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;"><strong>From:</strong></td>
+                        <td style="padding: 8px; border: 1px solid #ddd;">{EMAIL_ADDRESS}</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 8px; border: 1px solid #ddd;"><strong>Status:</strong></td>
+                        <td style="padding: 8px; border: 1px solid #ddd; color: green;">All Systems Operational</td>
+                    </tr>
+                </table>
+                <hr>
+                <p style="color: #666; font-size: 12px;">This is an automated test email from the Dismissal Checker system.</p>
+            </body>
+            </html>
+            """
+
+            html_part = MIMEText(html_body, 'html')
+            msg.attach(html_part)
+
+            server.sendmail(EMAIL_ADDRESS, ADMIN_CC_EMAILS, msg.as_string())
+            results['email_sent'] = True
+
+    except smtplib.SMTPAuthenticationError as e:
+        results['errors'].append(f"SMTP Authentication Error: {str(e)}")
+    except smtplib.SMTPException as e:
+        results['errors'].append(f"SMTP Error: {str(e)}")
+    except Exception as e:
+        results['errors'].append(f"General Error: {str(e)}")
+
+    # Build response
+    success = results['smtp_connection'] and results['email_sent']
+
+    return jsonify({
+        'success': success,
+        'message': 'System test completed successfully! Email sent to all admins.' if success else 'System test failed.',
+        'details': results
     })
 
 
