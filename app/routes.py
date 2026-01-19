@@ -600,47 +600,50 @@ def handle_offline_sync_submission(plan: DutyPlan, target_date: date, original_t
         submission_count = 0
         notification_teachers = []
 
-        for assignment in plan_assignments(plan):
-            form_key = f"assignment-{assignment.id}"
-            notes_key = f"notes-{assignment.id}"
-            status = request.form.get(form_key)
-            notes = request.form.get(notes_key, "").strip()
+        # Use no_autoflush to prevent premature flush during iteration
+        with db.session.no_autoflush:
+            for assignment in plan_assignments(plan):
+                form_key = f"assignment-{assignment.id}"
+                notes_key = f"notes-{assignment.id}"
+                status = request.form.get(form_key)
+                notes = request.form.get(notes_key, "").strip()
 
-            if status:  # Only process if status is provided
-                # Get existing record
-                existing_record = AttendanceRecord.query.filter_by(
-                    assignment_id=assignment.id,
-                    date=target_date
-                ).first()
+                if status:  # Only process if status is provided
+                    # Get existing record
+                    existing_record = AttendanceRecord.query.filter_by(
+                        assignment_id=assignment.id,
+                        date=target_date
+                    ).first()
 
-                previous_status = existing_record.status if existing_record else None
+                    previous_status = existing_record.status if existing_record else None
 
-                if existing_record:
-                    # Delete existing record to replace it
-                    db.session.delete(existing_record)
+                    if existing_record:
+                        # Update existing record instead of delete+add
+                        existing_record.status = status
+                        existing_record.notes = notes or None
+                    else:
+                        # Create new record only if none exists
+                        new_record = AttendanceRecord(
+                            assignment_id=assignment.id,
+                            date=target_date,
+                            status=status,
+                            notes=notes or None
+                        )
+                        db.session.add(new_record)
 
-                # Create new record
-                new_record = AttendanceRecord(
-                    assignment_id=assignment.id,
-                    date=target_date,
-                    status=status,
-                    notes=notes or None
-                )
-                db.session.add(new_record)
+                    # Adjust warnings based on status change
+                    adjust_warnings(assignment, previous_status, status)
 
-                # Adjust warnings based on status change
-                adjust_warnings(assignment, previous_status, status)
+                    submission_count += 1
 
-                submission_count += 1
-
-                # Track teachers for notifications
-                if assignment.teacher and status in ['absent', 'late']:
-                    notification_teachers.append({
-                        'teacher': assignment.teacher,
-                        'status': status,
-                        'assignment': assignment,
-                        'date': target_date
-                    })
+                    # Track teachers for notifications
+                    if assignment.teacher and status in ['absent', 'late']:
+                        notification_teachers.append({
+                            'teacher': assignment.teacher,
+                            'status': status,
+                            'assignment': assignment,
+                            'date': target_date
+                        })
 
         # Commit all changes
         db.session.commit()
@@ -671,38 +674,41 @@ def handle_attendance_submission(plan: DutyPlan, target_date: date) -> None:
     """Handle attendance form submission - only saves data without sending emails"""
     submission_count = 0
 
-    for assignment in plan_assignments(plan):
-        form_key = f"assignment-{assignment.id}"
-        notes_key = f"notes-{assignment.id}"
-        status = request.form.get(form_key)
-        notes = request.form.get(notes_key, "").strip()
+    # Use no_autoflush to prevent premature flush during iteration
+    with db.session.no_autoflush:
+        for assignment in plan_assignments(plan):
+            form_key = f"assignment-{assignment.id}"
+            notes_key = f"notes-{assignment.id}"
+            status = request.form.get(form_key)
+            notes = request.form.get(notes_key, "").strip()
 
-        if status:  # Only process if status is provided
-            # Get existing record
-            existing_record = AttendanceRecord.query.filter_by(
-                assignment_id=assignment.id,
-                date=target_date
-            ).first()
+            if status:  # Only process if status is provided
+                # Get existing record
+                existing_record = AttendanceRecord.query.filter_by(
+                    assignment_id=assignment.id,
+                    date=target_date
+                ).first()
 
-            previous_status = existing_record.status if existing_record else None
+                previous_status = existing_record.status if existing_record else None
 
-            if existing_record:
-                # Delete existing record to replace it
-                db.session.delete(existing_record)
+                if existing_record:
+                    # Update existing record instead of delete+add
+                    existing_record.status = status
+                    existing_record.notes = notes or None
+                else:
+                    # Create new record only if none exists
+                    new_record = AttendanceRecord(
+                        assignment_id=assignment.id,
+                        date=target_date,
+                        status=status,
+                        notes=notes or None
+                    )
+                    db.session.add(new_record)
 
-            # Create new record
-            new_record = AttendanceRecord(
-                assignment_id=assignment.id,
-                date=target_date,
-                status=status,
-                notes=notes or None
-            )
-            db.session.add(new_record)
+                # Adjust warnings based on status change
+                adjust_warnings(assignment, previous_status, status)
 
-            # Adjust warnings based on status change
-            adjust_warnings(assignment, previous_status, status)
-
-            submission_count += 1
+                submission_count += 1
 
     # Commit all changes
     db.session.commit()
