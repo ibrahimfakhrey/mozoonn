@@ -7,11 +7,11 @@ from flask import render_template
 from app.models import EmailNotificationLog
 from app import db
 
-# Email configuration
-SMTP_SERVER = "smtp.office365.com"
+# Email configuration - Using Gmail (PythonAnywhere whitelisted)
+SMTP_SERVER = "smtp.gmail.com"
 SMTP_PORT = 587
-EMAIL_ADDRESS = "support@ams-benha.com"
-EMAIL_PASSWORD = "Zo2lot[1991]"
+EMAIL_ADDRESS = "amsprog2022@gmail.com"
+EMAIL_PASSWORD = "xfleslznraphvqgc"
 
 # Admin emails to CC on all notifications
 ADMIN_CC_EMAILS = [
