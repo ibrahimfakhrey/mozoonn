@@ -29,6 +29,7 @@ from .email_service import (
     send_absence_deduction_email,
     send_late_warning_email,
     send_late_deduction_email,
+    send_new_system_announcement,
     ADMIN_CC_EMAILS,
     SMTP_SERVER,
     SMTP_PORT,
@@ -533,6 +534,30 @@ def import_teachers():
         return redirect(url_for("main.teachers"))
 
     return render_template("import_teachers.html")
+
+
+@main_bp.route("/send-system-announcement", methods=["GET", "POST"])
+def send_system_announcement():
+    """Send an email to all teachers about the new warning/deduction system."""
+    teachers = Teacher.query.filter(Teacher.email.isnot(None)).all()
+
+    if request.method == "POST":
+        results = {'sent': 0, 'failed': 0, 'messages': []}
+
+        for teacher in teachers:
+            if teacher.email:
+                result = send_new_system_announcement(teacher.email, teacher.full_name)
+                if result['success']:
+                    results['sent'] += 1
+                else:
+                    results['failed'] += 1
+                results['messages'].append(result['message'])
+
+        flash(f"Announcement sent to {results['sent']} teachers. {results['failed']} failed.",
+              "success" if results['failed'] == 0 else "warning")
+        return redirect(url_for("main.send_system_announcement"))
+
+    return render_template("send_announcement.html", teachers=teachers)
 
 
 def import_teachers_from_xls(path: Path) -> int:

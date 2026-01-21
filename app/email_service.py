@@ -398,8 +398,46 @@ def send_late_deduction_email(teacher_email, teacher_name, attendance_date, day,
             logging.info(f"{deduction_text} late deduction email sent successfully to {teacher_email} and CC'd admins")
 
         return {'success': True, 'message': f'{deduction_text} deduction notice sent to {teacher_name}'}
-        
+
     except Exception as e:
         error_msg = f"Failed to send deduction notice to {teacher_name}: {str(e)}"
+        logging.error(error_msg)
+        return {'success': False, 'message': error_msg}
+
+
+def send_new_system_announcement(teacher_email, teacher_name):
+    """
+    Send an announcement email about the new dismissal duty attendance system.
+
+    Args:
+        teacher_email: Teacher's email address
+        teacher_name: Teacher's full name
+
+    Returns:
+        dict: Result with success status and message
+    """
+    try:
+        msg = MIMEMultipart('alternative')
+        msg['From'] = EMAIL_ADDRESS
+        msg['To'] = teacher_email
+        msg['Subject'] = "New Dismissal Duty Attendance System - Warning & Deduction Policy"
+
+        html_body = render_template('email_new_system_announcement.html',
+                                  teacher_name=teacher_name)
+
+        html_part = MIMEText(html_body, 'html')
+        msg.attach(html_part)
+
+        logging.info(f"Sending new system announcement email to {teacher_email}")
+        with smtplib.SMTP(SMTP_SERVER, SMTP_PORT) as server:
+            server.starttls()
+            server.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_ADDRESS, [teacher_email], msg.as_string())
+            logging.info(f"New system announcement sent successfully to {teacher_email}")
+
+        return {'success': True, 'message': f'Announcement sent to {teacher_name}'}
+
+    except Exception as e:
+        error_msg = f"Failed to send announcement to {teacher_name}: {str(e)}"
         logging.error(error_msg)
         return {'success': False, 'message': error_msg}

@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>New Dismissal Duty Attendance System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            margin: 0;
+            padding: 20px;
+            color: #333333;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: #ffffff;
+            border: 2px solid #0d6efd;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background-color: #0d6efd;
+            color: white;
+            padding: 25px;
+            text-align: center;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .content {
+            padding: 30px;
+            background-color: #ffffff;
+        }
+        .highlight-box {
+            background-color: #e7f1ff;
+            border: 1px solid #0d6efd;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .section-title {
+            color: #0d6efd;
+            font-size: 18px;
+            font-weight: bold;
+            margin: 25px 0 15px 0;
+            padding-bottom: 5px;
+            border-bottom: 2px solid #0d6efd;
+        }
+        .rules-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+        }
+        .rules-table th {
+            background-color: #0d6efd;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        .rules-table td {
+            padding: 12px;
+            border-bottom: 1px solid #dee2e6;
+        }
+        .rules-table tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .warning-color {
+            color: #ffc107;
+            font-weight: bold;
+        }
+        .deduction-color {
+            color: #dc3545;
+            font-weight: bold;
+        }
+        .footer {
+            background-color: #f8f9fa;
+            padding: 20px;
+            text-align: center;
+            border-top: 2px solid #0d6efd;
+        }
+        .footer h3 {
+            margin: 0;
+            color: #0d6efd;
+            font-size: 18px;
+        }
+        .important-note {
+            background-color: #fff3cd;
+            border: 1px solid #ffc107;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>New Dismissal Duty Attendance System</h1>
+        </div>
+
+        <div class="content">
+            <p>Dear <strong>{{ teacher_name }}</strong>,</p>
+
+            <div class="highlight-box">
+                <p style="margin: 0;"><strong>We are pleased to announce the implementation of a new Dismissal Duty Attendance System.</strong></p>
+                <p style="margin: 10px 0 0 0;">This system will help us track attendance during dismissal duties and ensure the safety of our students.</p>
+            </div>
+
+            <div class="section-title">Late Arrival Policy</div>
+            <table class="rules-table">
+                <tr>
+                    <th>Occurrence</th>
+                    <th>Consequence</th>
+                </tr>
+                <tr>
+                    <td>1st Late</td>
+                    <td><span class="warning-color">Warning Email</span></td>
+                </tr>
+                <tr>
+                    <td>2nd Late</td>
+                    <td><span class="deduction-color">1/4 Day Salary Deduction</span></td>
+                </tr>
+                <tr>
+                    <td>3rd Late</td>
+                    <td><span class="deduction-color">1/2 Day Salary Deduction</span> (Counter Resets)</td>
+                </tr>
+            </table>
+
+            <div class="section-title">Absence Policy</div>
+            <table class="rules-table">
+                <tr>
+                    <th>Occurrence</th>
+                    <th>Consequence</th>
+                </tr>
+                <tr>
+                    <td>1st Absence</td>
+                    <td><span class="warning-color">Warning Email</span></td>
+                </tr>
+                <tr>
+                    <td>2nd Absence</td>
+                    <td><span class="deduction-color">1/2 Day Salary Deduction</span></td>
+                </tr>
+                <tr>
+                    <td>3rd Absence</td>
+                    <td><span class="deduction-color">1 Full Day Salary Deduction</span> (Counter Resets)</td>
+                </tr>
+            </table>
+
+            <div class="important-note">
+                <strong>Important:</strong> After the 3rd occurrence (for both late arrivals and absences), the counter will reset and the cycle begins again. Please ensure punctual attendance at all assigned dismissal duties.
+            </div>
+
+            <p>You will receive email notifications automatically when you are marked as late or absent from your assigned duties.</p>
+
+            <p>If you have any questions or concerns about this new system, please contact the administration.</p>
+
+            <p>Thank you for your cooperation and commitment to student safety.</p>
+        </div>
+
+        <div class="footer">
+            <h3>AMS School</h3>
+            <p style="margin: 5px 0; color: #666;">Dismissal Duty Management System</p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}Send System Announcement{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h2><i class="fas fa-bullhorn me-2"></i>Send System Announcement</h2>
+            </div>
+
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>About This Announcement</h5>
+                </div>
+                <div class="card-body">
+                    <p>This will send an email to <strong>all teachers</strong> informing them about the new Dismissal Duty Attendance System with the following warning and deduction rules:</p>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="text-warning"><i class="fas fa-clock me-1"></i>Late Arrival Policy</h6>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item"><strong>1st Late:</strong> Warning Email</li>
+                                <li class="list-group-item"><strong>2nd Late:</strong> 1/4 Day Salary Deduction</li>
+                                <li class="list-group-item"><strong>3rd Late:</strong> 1/2 Day Salary Deduction (Counter Resets)</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="text-danger"><i class="fas fa-user-times me-1"></i>Absence Policy</h6>
+                            <ul class="list-group list-group-flush mb-3">
+                                <li class="list-group-item"><strong>1st Absence:</strong> Warning Email</li>
+                                <li class="list-group-item"><strong>2nd Absence:</strong> 1/2 Day Salary Deduction</li>
+                                <li class="list-group-item"><strong>3rd Absence:</strong> 1 Full Day Salary Deduction (Counter Resets)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fas fa-users me-2"></i>Recipients ({{ teachers|length }} teachers)</h5>
+                </div>
+                <div class="card-body">
+                    {% if teachers %}
+                    <div class="table-responsive" style="max-height: 300px; overflow-y: auto;">
+                        <table class="table table-sm table-hover">
+                            <thead class="sticky-top bg-white">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Name</th>
+                                    <th>Email</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for teacher in teachers %}
+                                <tr>
+                                    <td>{{ loop.index }}</td>
+                                    <td>{{ teacher.full_name }}</td>
+                                    <td><small>{{ teacher.email }}</small></td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <hr>
+
+                    <form method="POST" onsubmit="return confirm('Are you sure you want to send this announcement to all {{ teachers|length }} teachers?');">
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg">
+                                <i class="fas fa-paper-plane me-2"></i>Send Announcement to All Teachers
+                            </button>
+                        </div>
+                    </form>
+                    {% else %}
+                    <div class="text-center py-4">
+                        <i class="fas fa-users fa-3x text-muted mb-3"></i>
+                        <h5 class="text-muted">No Teachers Found</h5>
+                        <p class="text-muted">Please import teachers first before sending announcements.</p>
+                        <a href="{{ url_for('main.import_teachers') }}" class="btn btn-primary">
+                            <i class="fas fa-user-plus me-1"></i>Import Teachers
+                        </a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
